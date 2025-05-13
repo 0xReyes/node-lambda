@@ -17,14 +17,24 @@ jobs:
 
       - name: Deploy CloudFormation stack
         run: |
+          echo "Deploying CloudFormation..."
           aws cloudformation deploy \
             --template-file template.yaml \
             --stack-name node-lambda \
             --capabilities CAPABILITY_IAM
 
-      # - name: Zip and update Lambda code
-      #   run: |
-      #     zip function.zip index.js
-      #     aws lambda update-function-code \
-      #       --function-name node-lambda \
-      #       --zip-file fileb://function.zip
+      - name: Zip and update Lambda code
+        run: |
+          echo "Zipping Lambda code..."
+          zip function.zip index.js
+          echo "Uploading code to Lambda..."
+          aws lambda update-function-code \
+            --function-name node-lambda \
+            --zip-file fileb://function.zip
+
+      - name: Output API Gateway URL
+        run: |
+          echo "Fetching API Gateway endpoint..."
+          API_ID=$(aws apigatewayv2 get-apis --query "Items[?Name=='NodeLambdaApi'].ApiId" --output text)
+          echo "✅ Your deployed endpoint:"
+          echo "https://${API_ID}.execute-api.us-east-1.amazonaws.com/prod/"
