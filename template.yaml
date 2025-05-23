@@ -19,7 +19,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       FunctionName: cors-proxy
-      Handler: index.handler
+      Handler: src/handler.handler
       Runtime: nodejs18.x
       Role: !GetAtt NodeLambdaRole.Arn
       Code:
