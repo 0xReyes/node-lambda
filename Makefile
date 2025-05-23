@@ -12,7 +12,7 @@ clean:
 	@echo "Clean complete"
 
 # Install dependencies and package
-package: node_modules
+package: install
 	@echo "Packaging Lambda code..."
 	@mkdir -p dist
 	@zip -r dist/function.zip \
@@ -22,7 +22,7 @@ package: node_modules
 	@echo "📦 Packaging complete"
 
 # Install dependencies if package.json changes
-node_modules: package.json
+install: package.json
 	@echo "Installing dependencies..."
 	@npm install --production
 	@touch node_modules  # Mark as up-to-date
