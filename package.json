@@ -1,0 +1,24 @@
+{
+  "name": "lambda-proxy-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/handler.js",
+  "scripts": {
+    "start": "node src/handler.js",
+    "start:dev": "nodemon src/handler.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "aws-serverless-express": "^3.4.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.10",
+    "serverless-offline": "^14.4.0",
+    "supertest": "^7.1.1"
+  },
+  "author": "",
+  "license": "ISC"
+}

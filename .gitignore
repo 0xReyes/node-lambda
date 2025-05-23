@@ -1,0 +1,9 @@
+node_modules/
+.env
+.DS_Store
+coverage/
+.serverless/
+.aws-sam/
+.vscode/
+npm-debug.log
+*.zip
