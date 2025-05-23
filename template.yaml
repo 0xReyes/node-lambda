@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Direct Lambda deployment without S3
+Description: CORS Proxy with bundled node_modules
 
 Resources:
   NodeLambdaRole:
@@ -18,49 +18,20 @@ Resources:
   NodeLambdaFunction:
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: node-lambda
+      FunctionName: cors-proxy
       Handler: index.handler
-      Role: !GetAtt NodeLambdaRole.Arn
       Runtime: nodejs18.x
+      Role: !GetAtt NodeLambdaRole.Arn
       Code:
-        ZipFile: |
-          exports.handler = async () => {
-            return { statusCode: 200, body: \"Placeholder\" };
-          };
+        ZipFile: "dummy"  # Will be replaced by direct upload
+      Environment:
+        Variables:
+          NODE_ENV: production
+          BLOCKED_HOSTS: 'localhost,127.0.0.1,169.254.169.254'
+      MemorySize: 512
+      Timeout: 15
 
-  HttpApi:
-    Type: AWS::ApiGatewayV2::Api
-    Properties:
-      Name: NodeLambdaApi
-      ProtocolType: HTTP
-
-  LambdaIntegration:
-    Type: AWS::ApiGatewayV2::Integration
-    Properties:
-      ApiId: !Ref HttpApi
-      IntegrationType: AWS_PROXY
-      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NodeLambdaFunction.Arn}/invocations
-      IntegrationMethod: POST
-      PayloadFormatVersion: '2.0'
-
-  ApiRoute:
-    Type: AWS::ApiGatewayV2::Route
-    Properties:
-      ApiId: !Ref HttpApi
-      RouteKey: 'ANY /{proxy+}'
-      Target: !Join [ '/', [ 'integrations', !Ref LambdaIntegration ] ]
-
-  ApiStage:
-    Type: AWS::ApiGatewayV2::Stage
-    Properties:
-      ApiId: !Ref HttpApi
-      StageName: prod
-      AutoDeploy: true
-
-  LambdaInvokePermission:
-    Type: AWS::Lambda::Permission
-    Properties:
-      FunctionName: !Ref NodeLambdaFunction
-      Action: lambda:InvokeFunction
-      Principal: apigateway.amazonaws.com
-      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${HttpApi}/*
+Outputs:
+  FunctionName:
+    Description: "Lambda Function Name"
+    Value: !Ref NodeLambdaFunction
