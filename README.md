@@ -1,4 +1,3 @@
-```
 # Lambda CORS Proxy
 
 A lightweight, CORS Anywhere–style proxy deployed to AWS Lambda via CloudFormation. It forwards HTTP requests to a target URL, adds permissive CORS headers, and supports GET/POST/PUT/DELETE/etc.
@@ -81,4 +80,3 @@ BLOCKED_HOSTS=localhost,127.0.0.1
 ## License
 
 MIT
-```
