@@ -10,33 +10,32 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
 
-      - name: Install dependencies and package
-        run: make package
-
-      - uses: aws-actions/configure-aws-credentials@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Deploy CloudFormation stack
+      - name: Deploy CloudFormation stack (infra only)
         run: |
           aws cloudformation deploy \
             --template-file template.yaml \
             --stack-name cors-proxy \
             --capabilities CAPABILITY_IAM
 
-      - name: Update Lambda function
-        run: make deploy
+      - name: Package and upload Lambda code
+        run: make full
 
-      - name: Get API endpoint
+      - name: Get API Gateway endpoint
         run: |
           API_ENDPOINT=$(aws cloudformation describe-stacks \
             --stack-name cors-proxy \
