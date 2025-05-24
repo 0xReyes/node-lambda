@@ -54,6 +54,7 @@ Resources:
 
   ApiGatewayDeployment:
     Type: AWS::ApiGatewayV2::Deployment
+    DependsOn: ApiGatewayRoute
     Properties:
       ApiId: !Ref ApiGateway
 
