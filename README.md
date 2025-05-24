@@ -1,6 +1,6 @@
-# Lambda CORS Proxy
 
-A lightweight, CORS Anywhere–style proxy deployed to AWS Lambda via CloudFormation. It forwards HTTP requests to a target URL, adds permissive CORS headers, and supports GET/POST/PUT/DELETE/etc.
+# Lambda CORS Proxy
+Simple CORS Anywhere–style proxy deployed to AWS Lambda via CloudFormation. It forwards HTTP requests to a target URL, adds permissive CORS headers, and supports GET/POST/PUT/DELETE/etc.
 
 ---
 
@@ -15,7 +15,7 @@ A lightweight, CORS Anywhere–style proxy deployed to AWS Lambda via CloudForma
 ---
 
 ## Project Structure
-
+```bash
 src/  
 ├── app.js                  # Express app setup  
 ├── handler.js              # Lambda + local entry point  
@@ -26,7 +26,7 @@ src/
 │   └── proxy-service.js    # Core proxy logic  
 └── utils/  
     └── error-handler.js    # Shared error response formatter
-
+```
 ---
 
 ## Usage
@@ -34,46 +34,46 @@ src/
 ### Proxy Format
 
 Send requests in this format:  
-GET /<target-host>/<path>?<query>
+GET `/<target-host>/<path>?<query>`
 
 Example:  
-curl "https://your-api-id.execute-api.us-east-1.amazonaws.com/api.mexc.com/api/v3/depth?symbol=BTCUSDT"
+`curl https://your-api-id.execute-api.us-east-1.amazonaws.com/api.mexc.com/api/v3/depth?symbol=BTCUSDT`
 
 This will proxy to:  
-https://api.mexc.com/api/v3/depth?symbol=BTCUSDT
+`https://api.mexc.com/api/v3/depth?symbol=BTCUSDT`
 
 ---
 
 ## Run Locally
 
-npm install  
-node src/handler.js
+`npm install`
+`node src/handler.js`
 
 Then:  
-curl "http://localhost:3000/api.mexc.com/api/v3/depth?symbol=BTCUSDT"
+`curl http://localhost:3000/api.mexc.com/api/v3/depth?symbol=BTCUSDT`
 
 ---
 
 ## Deployment
 
 ### Build and Deploy Code
-
-make package     # Install and zip Lambda function  
-make deploy      # Upload function code to AWS Lambda
-
+```
+make package     
+make deploy
+```
 ### First-Time CloudFormation Deployment
-
+```
 aws cloudformation deploy \  
   --template-file template.yaml \  
   --stack-name cors-proxy \  
   --capabilities CAPABILITY_IAM
-
+```
 ---
 
 ## Environment Configuration
 
 Block specific domains using the `BLOCKED_HOSTS` environment variable:  
-BLOCKED_HOSTS=localhost,127.0.0.1
+`BLOCKED_HOSTS=localhost,127.0.0.1`
 
 ---
 
