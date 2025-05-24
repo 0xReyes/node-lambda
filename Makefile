@@ -1,5 +1,5 @@
 # Build and deployment control
-.PHONY: full clean package deploy help
+.PHONY: full clean package deploy install local cert help
 
 # Full deployment pipeline
 full: clean package deploy
@@ -34,3 +34,19 @@ deploy: package
 		--function-name cors-proxy \
 		--zip-file fileb://dist/function.zip
 	@echo "✅ Lambda updated"
+
+# Generate self-signed certs for local HTTPS
+cert:
+	@echo "Generating self-signed certs..."
+	@mkdir -p cert
+	@openssl req -x509 -newkey rsa:2048 -nodes \
+		-keyout cert/key.pem \
+		-out cert/cert.pem \
+		-days 365 \
+		-subj "/CN=localhost"
+	@echo "🔐 Certs generated"
+
+# Run local server (assumes certs and handler already exist)
+local: install cert
+	@echo "Starting local HTTPS server..."
+	@npm run start:dev
